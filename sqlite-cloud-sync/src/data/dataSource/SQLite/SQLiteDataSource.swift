@@ -22,7 +22,6 @@ struct SQLiteSessionDataSource: SQLiteDataSource {
     DatabaseManager.shared,
   )
   private let dbWriter: DatabaseWriter
-  private let debouncer = Debouncer(delay: 1.0)
 
   private init(_ dbWriter: DatabaseWriter) {
     self.dbWriter = dbWriter
@@ -52,8 +51,6 @@ struct SQLiteSessionDataSource: SQLiteDataSource {
     let result = try updates(db)
 
     // 3. Capture the changeset data
-    let changeDatas = try session.captureChangesetData()
-    
     if let changeDatas = try session.captureChangesetData() {
       for changeData in changeDatas {
         let changeset = Changeset(
@@ -70,6 +67,7 @@ struct SQLiteSessionDataSource: SQLiteDataSource {
       }
 
       // 4. Upload the changeset to cloud
+      CloudKitChangesetNotification.push.request()
     }
     return result
   }

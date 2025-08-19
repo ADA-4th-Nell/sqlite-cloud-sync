@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct TodoView: View {
+  @FocusState private var isFocused: Bool
+  @State private var job: String = ""
   @State private var viewModel: TodoViewModel = .init(
     todoRepository: TodoRepository(dataSource: SQLiteSessionDataSource.shared)
   )
-  @State private var job: String = ""
-  @FocusState private var isFocused: Bool
 
   private func create() {
     if job.isEmpty { return }
@@ -43,7 +43,6 @@ struct TodoView: View {
             todo in
           HStack {
             // MARK: Done
-
             Image(systemName: todo.done ? "checkmark.circle.fill" : "circle")
               .foregroundColor(todo.done ? .green : .gray)
 
@@ -66,6 +65,14 @@ struct TodoView: View {
     }
     .onAppear {
       isFocused = true
+    }
+    .task {
+      viewModel.fetch()
+      _ = CloudKitChangesetNotification.listen(mainQueue: true) { event in
+        if event == .pullCompleted{
+          self.viewModel.fetch()
+        }
+      }
     }
   }
 }

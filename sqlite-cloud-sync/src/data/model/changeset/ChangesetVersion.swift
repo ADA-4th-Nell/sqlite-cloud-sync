@@ -8,7 +8,7 @@
 import Foundation
 import GRDB
 
-struct ChangesetVersion: Codable {
+nonisolated struct ChangesetVersion: Codable {
   var deviceId: UUIDDTO
   var pulledAt: Date
 }
@@ -16,11 +16,11 @@ struct ChangesetVersion: Codable {
 extension ChangesetVersion: RecordData {
   static var databaseTableName: String = "ChangesetVersion"
 
-  enum CodingKeys: String, CodingKey {
+  nonisolated enum CodingKeys: String, CodingKey {
     case deviceId, pulledAt
   }
 
-  enum Columns {
+  nonisolated enum Columns {
     static let deviceId = Column(CodingKeys.deviceId)
     static let pulledAt = Column(CodingKeys.pulledAt)
   }

@@ -8,7 +8,7 @@
 import Foundation
 import GRDB
 
-final class Changeset: Codable {
+nonisolated final class Changeset: Codable {
   let id: UUIDDTO
   var data: Data
   let action: ChangesetAction
@@ -39,11 +39,11 @@ final class Changeset: Codable {
 extension Changeset: RecordData {
   static var databaseTableName: String = "Changeset"
 
-  enum CodingKeys: String, CodingKey {
+  nonisolated enum CodingKeys: String, CodingKey {
     case id, data, action, tableName, pushed, pushedAt, createdAt
   }
 
-  enum Columns {
+  nonisolated enum Columns {
     static let id = Column(CodingKeys.id)
     static let data = Column(CodingKeys.data)
     static let action = Column(CodingKeys.action)
@@ -53,3 +53,4 @@ extension Changeset: RecordData {
     static let createdAt = Column(CodingKeys.createdAt)
   }
 }
+
