@@ -126,9 +126,9 @@ extension Data {
               case .rowDataMismatch: .replace
               case .rowNotFound: .omit
               case .primaryKeyConflict: .omit
-              case .constraintViolation: .omit
-              case .foreignKeyViolation: .omit
-              }
+              case .constraintViolation: .abort
+              case .foreignKeyViolation: .abort
+            }
             return action.rawValue
           },
           UnsafeMutableRawPointer(

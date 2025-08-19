@@ -249,12 +249,9 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
             switch changeset.action {
             case .insert, .delete:
               try await dbWriter.write { db in
-                var mutableData = changesetData
-                try mutableData.data.apply(db.sqliteConnection!)
+                try changesetData.data.apply(db.sqliteConnection!)
               }
             case .update:
-              // Update only if the incoming data's createdAt is more
-              // recent than the table's updatedAt.
               let tableName = changeset.tableName
               let changesetCreatedAt = changeset.createdAt
               let localUpdatedAt = try await getUpdatedAt(
@@ -263,8 +260,7 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
               )
               if localUpdatedAt < changesetCreatedAt {
                 try await dbWriter.write { db in
-                  var mutableData = changesetData
-                  try mutableData.data.apply(db.sqliteConnection!)
+                  try changesetData.data.apply(db.sqliteConnection!)
                 }
               }
             }
