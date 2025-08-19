@@ -10,22 +10,23 @@ import GRDB
 
 struct DatabaseManager {
   static let shared = makeShared()
-  
+  private init() {}
+
   static func checkSessionExtension() -> Bool {
     if let checkCString = my_custom_sqlite_build_tag() {
-      print(String(cString: checkCString))
+      Logger.d(String(cString: checkCString))
       return true
     } else {
       return false
     }
   }
-  
+
   private static func makeShared() -> DatabaseWriter {
     do {
       guard checkSessionExtension() else {
         fatalError("Session extension is not enabled")
       }
-      
+
       let fileManager = FileManager.default
       let appSupportURL = try fileManager.url(
         for: .applicationSupportDirectory,
@@ -46,14 +47,14 @@ struct DatabaseManager {
       let databaseURL = directoryURL.appendingPathComponent("db.sqlite")
       let dbPool = try DatabasePool(path: databaseURL.path)
       try DatabaseManager.migrate(dbPool)
-      
-      print("📚 Database stored at: \(databaseURL.path)")
+
+      Logger.d("📚 Database stored at: \(databaseURL.path)")
       return dbPool
     } catch {
       fatalError("Failed to open database: \(error)")
     }
   }
-  
+
   private static func migrate(_ dbWriter: DatabaseWriter) throws {
     var migrator = DatabaseMigrator()
     migrator.registerMigration("v1") { db in

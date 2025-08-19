@@ -1,0 +1,5 @@
+--indent 2
+--lineaftermarks false
+--self init-only
+--enumnamespaces structs-only
+--disable preferForLoop

@@ -5,3 +5,4 @@
 #include "sqlite3.h"
 
 const char *my_custom_sqlite_build_tag(void);
+

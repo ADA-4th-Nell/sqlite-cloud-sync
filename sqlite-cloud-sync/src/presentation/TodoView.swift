@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct TodoView: View {
-  @State private var viewModel: TodoViewModel = .init()
+  @State private var viewModel: TodoViewModel = .init(
+    todoRepository: TodoRepository(dataSource: SQLiteSessionDataSource.shared)
+  )
   @State private var job: String = ""
   @FocusState private var isFocused: Bool
 
@@ -22,6 +24,7 @@ struct TodoView: View {
   var body: some View {
     Form {
       // MARK: Create Todo
+
       HStack {
         TextField("Todo", text: $job)
           .focused($isFocused)
@@ -33,16 +36,19 @@ struct TodoView: View {
       }
 
       // MARK: Todo List
+
       List {
         ForEach(Array(viewModel.todos.enumerated()), id: \.element.id) {
           index,
-          todo in
+            todo in
           HStack {
             // MARK: Done
+
             Image(systemName: todo.done ? "checkmark.circle.fill" : "circle")
               .foregroundColor(todo.done ? .green : .gray)
 
             // MARK: Job
+
             Text(todo.job)
             Spacer()
           }
