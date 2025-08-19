@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct sqlite_cloud_syncApp: App {
+struct Application: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
