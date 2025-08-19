@@ -1,5 +1,5 @@
 //
-//  CloudKit.swift
+//  CloudKitDataSource.swift
 //  sqlite-cloud-sync
 //
 //  Created by Nell on 8/19/25.
@@ -32,7 +32,7 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
     self.dbWriter = dbWriter
     self.isSetup = false
     self.isInitialized = false
-    
+
     // Listen pull request
     _ = CloudKitChangesetNotification.listen(mainQueue: false) { event in
       switch event {
@@ -108,7 +108,7 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
           [
             ChangesetVersion.Columns.pulledAt.set(
               to: Date(timeIntervalSince1970: 0)
-            )
+            ),
           ]
         )
       }
@@ -161,14 +161,14 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
         deleting: []
       )
       let pushedChangesets: [Changeset] = result.saveResults.compactMap {
-        (recordID, saveResult) in
+        recordID, saveResult in
         let changeset = changesets.first {
           $0.id.uuidString == recordID.recordName
         }
         switch saveResult {
         case .success:
           return changeset
-        case .failure(let error):
+        case let .failure(error):
           let ckError = error as? CKError
           switch ckError?.code {
           case .serverRecordChanged:
@@ -228,7 +228,7 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
         NSSortDescriptor(
           key: ChangesetV1Record.CodingKeys.uploadedAt.rawValue,
           ascending: true
-        )
+        ),
       ]
 
       let result = try await config.database.records(matching: query)
@@ -239,7 +239,7 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
 
       for (_, recordResult) in result.matchResults {
         switch recordResult {
-        case .success(let record):
+        case let .success(record):
           let changesetRecord = ChangesetV1Record.from(record)
           let changeset = changesetRecord.toChangeset()
           let changesetDatas = try ChangesetData.getListFromData(
@@ -276,7 +276,7 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
             try await updateChangesetVersionPulledAt(deviceId, uploadedAt)
             changesetVersion.pulledAt = uploadedAt
           }
-        case .failure(let error):
+        case let .failure(error):
           Logger.e("☁️ Failed to fetch record: \(error)")
         }
       }
@@ -299,7 +299,7 @@ final class CloudKitChangesetDataStorage: CloudKitDataStorage {
       subscriptionID: config.subscriptionId,
       options: [.firesOnRecordCreation, .firesOnRecordUpdate, .firesOnRecordDeletion]
     )
-    
+
     // Enable background fetch without showing the notification UI.
     let notificationInfo = CKSubscription.NotificationInfo()
     notificationInfo.shouldSendContentAvailable = true
@@ -340,7 +340,7 @@ extension CloudKitChangesetDataStorage {
       (continuation: CheckedContinuation<Void, Error>) in
       config.database.delete(withSubscriptionID: config.subscriptionId) {
         _,
-        error in
+          error in
         if let error = error {
           Logger.e("Failed to delete subscription: \(error)")
           continuation.resume(throwing: error)
@@ -358,7 +358,7 @@ extension CloudKitChangesetDataStorage {
       deleting: []
     )
   }
-  
+
   // MARK: Create RecordType
   private func createRecordType() async throws {
     let record = CKRecord(
@@ -383,8 +383,7 @@ extension CloudKitChangesetDataStorage {
   }
 
   // MARK: Get updatedAt by tableName and id
-  private func getUpdatedAt(tableName: String, id: String) async throws -> Date
-  {
+  private func getUpdatedAt(tableName: String, id: String) async throws -> Date {
     return try await dbWriter.read { db in
       let row = try Row.fetchOne(
         db,

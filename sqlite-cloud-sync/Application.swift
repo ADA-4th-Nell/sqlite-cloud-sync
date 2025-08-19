@@ -22,7 +22,8 @@ struct Application: App {
 class AppDelegate: NSObject, UIApplicationDelegate {
   func application(
     _: UIApplication,
-    _ _: [UIApplication.LaunchOptionsKey: Any]? = nil
+    didFinishLaunchingWithOptions _: [UIApplication.LaunchOptionsKey: Any]? =
+      nil
   ) -> Bool {
     /// Synchronize on startup
     _ = CloudKitChangesetDataStorage.shared
@@ -35,8 +36,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
   func application(
     _: UIApplication,
-    _ userInfo: [AnyHashable: Any],
-    _ completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+    fetchCompletionHandler completionHandler: @escaping (
+      UIBackgroundFetchResult
+    ) -> Void
   ) {
     /// Cloudkit push notification received
     if CKQueryNotification(

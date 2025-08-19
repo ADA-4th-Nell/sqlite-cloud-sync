@@ -63,5 +63,4 @@ extension TodoDTO: RecordData {
     static let updatedAt = Column(CodingKeys.updatedAt)
     static let createdAt = Column(CodingKeys.createdAt)
   }
-
 }

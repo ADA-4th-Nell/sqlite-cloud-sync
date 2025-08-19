@@ -5,7 +5,6 @@
 //  Created by Nell on 8/19/25.
 //
 
-
 import CloudKit
 
 struct CloudKitConfig {

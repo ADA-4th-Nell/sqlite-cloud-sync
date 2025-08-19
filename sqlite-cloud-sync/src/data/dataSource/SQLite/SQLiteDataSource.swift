@@ -43,7 +43,7 @@ struct SQLiteSessionDataSource: SQLiteDataSource {
     guard let sqliteConnection = db.sqliteConnection else {
       fatalError("sqliteConnection is nil")
     }
-    
+
     // 1. Start a session
     let session = try SQLiteSessionExtension(sqliteConnection)
 

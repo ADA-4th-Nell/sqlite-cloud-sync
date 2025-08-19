@@ -8,7 +8,7 @@
 import Foundation
 import GRDB
 
-nonisolated final class Changeset: Codable {
+final nonisolated class Changeset: Codable {
   let id: UUIDDTO
   var data: Data
   let action: ChangesetAction
@@ -53,4 +53,3 @@ extension Changeset: RecordData {
     static let createdAt = Column(CodingKeys.createdAt)
   }
 }
-

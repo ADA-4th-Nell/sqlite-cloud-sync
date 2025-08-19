@@ -69,7 +69,7 @@ struct TodoView: View {
     .task {
       viewModel.fetch()
       _ = CloudKitChangesetNotification.listen(mainQueue: true) { event in
-        if event == .pullCompleted{
+        if event == .pullCompleted {
           self.viewModel.fetch()
         }
       }
